@@ -16,13 +16,17 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { getNavbarStyles } from './Navbar.Styles';
 import CommonButton from '../button/CommonButton';
 import { motion } from 'framer-motion';
-import MaleAvatar from '../../assets/male avatar.jpg';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
 
     const { classes } = getNavbarStyles();
+    const navigate = useNavigate();
 
-    const [isAdmin, setIsAdmin] = useState(true);
+    const { photo, isAdmin } = useSelector((state)=>{
+        return state.memberDataReducer;
+    });
 
     const memberNavigationLinks = [
         { text: 'Home', icon: <Home className={classes.getListItemIconStyles} />, url: '/' },
@@ -66,7 +70,10 @@ const Navbar = () => {
     };
 
     const handleLogout = () => {
-        localStorage.removeItem("currentUserName");
+        localStorage.removeItem("memberToken");
+        localStorage.removeItem("persist:root");
+        navigate("/");
+        window.location.reload();
     };
 
     return (
@@ -155,7 +162,7 @@ const Navbar = () => {
                         }}
                         className={classes.getBrandLogoStyles}
                     >
-                        FoodMood
+                        55Feast
                     </Typography>
 
                     <Box className={classes.getNavLinksStylesTwo}>
@@ -170,7 +177,7 @@ const Navbar = () => {
                             }}
                             className={classes.getBrandLogoStyles}
                         >
-                            FoodMood
+                            55Feast
                         </Typography>
                         {
                             isAdmin
@@ -220,7 +227,7 @@ const Navbar = () => {
                         <Box sx={{ flexGrow: 0, display:"flex", justifyContent:"center", alignItems:"center" }}>
                         <IconButton sx={{ p: 0, marginRight:"1rem" }}>
                             <Avatar
-                                src={MaleAvatar}
+                                src={photo}
                                 alt=""
                                 sx={{
                                     width: 36,
@@ -236,7 +243,7 @@ const Navbar = () => {
                             <CommonButton
                                 onClick={handleLogout}
                                 children="Logout"
-                                type={""}
+                                type=""
                                 customStyles={{
                                     width:"80px",
                                     height:"40px",
@@ -261,7 +268,7 @@ const Navbar = () => {
                     <Box sx={{ flexGrow: 0, display:{ xs: 'flex', md: 'none' }, justifyContent:"center", alignItems:"center", }}>
                         <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, marginRight:"0.5rem" }}>
                             <Avatar
-                            src={MaleAvatar}
+                            src={photo}
                             alt=""
                             sx={{
                                 width: 32,

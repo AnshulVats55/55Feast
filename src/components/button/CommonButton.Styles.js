@@ -7,7 +7,7 @@ export const getButtonStyles = makeStyles()((theme, customStyles) => ({
         fontFamily: "Poppins, sans-serif",
         fontSize: theme.typography.fontSize,
         padding:"0.25rem 0.75rem",
-        textTransform:"capitalize",
+        textTransform:"none",
         ...customStyles,
     },
 }));

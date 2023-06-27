@@ -7,9 +7,24 @@ import CommonButton from '../button/CommonButton';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { motion } from 'framer-motion';
+import handleMemberLogin from '../../api/login/Login';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { setMemberData } from '../../store/slices/MemberDataSlice';
+import { setMemberPicture } from '../../store/slices/MemberPictureSlice';
+import { setIsLoading } from '../../store/slices/LoaderSlice';
+import Loader from '../loader/Loader';
 const LoginForm = () => {
 
     const { classes } = getLoginFormStyles();
+
+    const isLoading = useSelector((state)=>{
+        return state.loaderReducer.isLoading;
+    });
+    // console.log(isLoading);
+
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -24,9 +39,22 @@ const LoginForm = () => {
         event.preventDefault();
       };
 
-      const handleFormSubmit = async () => {
+      const memberData = {
+        email: email,
+        password: password
+      };
 
-      }
+      const handleFormSubmit = async () => {
+        dispatch(setIsLoading(true));
+        const response = await handleMemberLogin(memberData);
+        // console.log(response);
+        if(response?.data?.status === "success"){
+            dispatch(setIsLoading(false));
+            localStorage.setItem("memberToken", response.data.data.token);
+            dispatch(setMemberData(response.data.data.user));
+            window.location.reload();
+        };
+      };
 
     return (
         <Box className={classes.getMainContStyles}>
@@ -150,6 +178,13 @@ const LoginForm = () => {
                     &nbsp;Signup
                 </Link>
             </Box>
+            {
+                isLoading
+                ?
+                <Loader />
+                :
+                <></>
+            }
         </Box>
     );
 }

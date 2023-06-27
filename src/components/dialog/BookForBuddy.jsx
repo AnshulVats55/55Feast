@@ -1,14 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, Typography } from '@mui/material';
-import { getInvitationDialogStyles } from './InvitationDialog.Styles';
+import { getBookForBuddyDialogStyles } from './BookForBuddy.Styles';
 import MaleAvatar from '../../assets/male avatar.jpg';
 import InviteButton from '../inviteButton/InviteButton';
-// import { motion } from 'framer-motion';
 import InviteMemberCard from '../card/InviteMemberCard';
 
-const InvitationDialog = ({ open, scroll, handleClose }) => {
+const BookForBuddyDialog = ({ open, scroll, handleClose }) => {
 
-    const { classes } = getInvitationDialogStyles();
+    const { classes } = getBookForBuddyDialogStyles();
     
     const [searchTerm, setSearchTerm] = useState("");
     let animationDuration = 0.4;
@@ -81,7 +80,7 @@ const InvitationDialog = ({ open, scroll, handleClose }) => {
                     id="scroll-dialog-title"
                     className={classes.getDialogTitleStyles}
                 >
-                    Invite Members
+                    Book for buddy
                 </DialogTitle>
                 <DialogContent dividers={scroll === 'paper'} className={classes.getDialogContentStyles}>
                     <DialogContentText
@@ -95,11 +94,11 @@ const InvitationDialog = ({ open, scroll, handleClose }) => {
                                 fontSize:"1rem",
                             }}
                         >
-                            Invite new members and help them automate their Lunch Count process
+                            Book a lunch count for your buddy and invite them to have lunch with you
                         </Typography>
                         <TextField
                             type="search"
-                            placeholder="Search members to invite"
+                            placeholder=""
                             variant="outlined"
                             multiline
                             className={classes.root}
@@ -118,7 +117,7 @@ const InvitationDialog = ({ open, scroll, handleClose }) => {
                                 memberName={member.memberName}
                                 memberEmail={member.memberEmail}
                                 animationDuration={animationDuration}
-                                children="Invite"
+                                children="Book"
                             />
                         );
                     })
@@ -129,7 +128,7 @@ const InvitationDialog = ({ open, scroll, handleClose }) => {
                             marginTop:"2rem",
                         }}
                     >
-                        No member found with this name !
+                        No buddy found with this name !
                     </Typography>
                 }
                     </DialogContentText>
@@ -149,4 +148,4 @@ const InvitationDialog = ({ open, scroll, handleClose }) => {
     );
 }
 
-export default InvitationDialog;
+export default BookForBuddyDialog;

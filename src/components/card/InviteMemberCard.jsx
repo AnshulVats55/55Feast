@@ -3,27 +3,28 @@ import { Box, Typography, Avatar } from '@mui/material';
 import InviteButton from '../inviteButton/InviteButton';
 import { getInviteMemberCardStyles } from './InviteMemberCard.Styles';
 import DoneIcon from '@mui/icons-material/Done';
+import { motion } from 'framer-motion';
 
-const InviteMemberCard = ({ key, memberAvatar, memberName, memberEmail }) => {
+const InviteMemberCard = ({ key, memberAvatar, memberName, memberEmail, children, animationDuration }) => {
 
     const { classes } = getInviteMemberCardStyles();
 
     const [isInvited, setIsInvited] = useState(false);
-    const [children, setChildren] = useState("Invite");
-
     const handleMemberInvitation = () => {
         setIsInvited(true);
-        setChildren("Success");
-        // setTimeout(() => {
-        //     setIsInvited(false);
-        //     setChildren("Invite");
-        // }, 3000);
     };
 
     return (
-        <Box
+        <motion.div
             className={classes.getMemberCardStyles}
             key={key}
+            initial={{ translateY: '25px', opacity: 0 }}
+            whileInView={{ translateY: '0px', opacity: 1}}
+            transition={{
+                duration: animationDuration,
+                repeatType: 'reverse',
+                ease:'easeInOut',
+            }}
         >
             <Box className={classes.getMemberAvatarContStyles}>
                 <Avatar
@@ -66,7 +67,7 @@ const InviteMemberCard = ({ key, memberAvatar, memberName, memberEmail }) => {
                 />
             }
             </Box>
-        </Box>
+        </motion.div>
     );
 }
 

@@ -14,7 +14,7 @@ const AllRoutes = () => {
   return (
     <Router>
         {
-            localStorage.getItem("currentUserName")
+            localStorage.getItem("memberToken")
             ?
             <>
                 <Navbar />

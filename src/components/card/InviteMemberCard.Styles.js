@@ -11,7 +11,6 @@ export const getInviteMemberCardStyles = makeStyles()((theme)=>({
         margin:"0.5rem 0rem",
         padding:"0.25rem 0rem",
         cursor:"pointer",
-        transition:"0.20s ease-in-out",
         "&:hover": {
             boxShadow: "rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px",
             transform: "scale(1.015)",

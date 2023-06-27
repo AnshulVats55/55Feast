@@ -2,15 +2,29 @@ import { useState } from 'react';
 import { useForm } from "react-hook-form";
 import { Link } from 'react-router-dom';
 import { getSignupFormStyles } from './SignupForm.Styles';
-import { Box, Grid, Stack, TextField, FormControl, Avatar, Select, MenuItem, Typography, OutlinedInput, IconButton, InputAdornment, } from '@mui/material';
+import { Box, Grid, Stack, TextField, FormControl, Select, MenuItem, Typography, OutlinedInput, IconButton, InputAdornment, } from '@mui/material';
 import CommonButton from '../button/CommonButton';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import CustomDialog from '../dialog/Dialog';
 import { motion } from 'framer-motion';
+import handleMemberSignup from '../../api/signup/Signup';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { setIsLoading } from '../../store/slices/LoaderSlice';
+import Loader from '../loader/Loader';
+
 const SignupForm = () => {
 
     const { classes } = getSignupFormStyles();
+
+    const { isLoading } = useSelector((state)=>{
+        return state.loaderReducer;
+    });
+    // console.log(isLoading);
+
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
@@ -54,7 +68,7 @@ const SignupForm = () => {
         reader.onload = function () {
           encodedFile = reader.result;
           setProfilePicture(encodedFile);
-          console.log("profile picture in encoded format is this -------------------->", encodedFile);
+        //   console.log("profile picture in encoded format is this -------------------->", encodedFile);
         };
         reader.onerror = function (error) {
           return error;
@@ -86,19 +100,29 @@ const SignupForm = () => {
         event.preventDefault();
     };
 
-    const userData = {
+    const memberData = {
         firstName: firstName,
         lastName: lastName,
-        phoneNumber: phoneNumber,
-        profilePicture: profilePicture,
-        userLocation: location,
-        userGender: gender,
-        userEmail: email,
-        userPassword: password
+        phone: parseInt(phoneNumber),
+        photo: profilePicture,
+        location: location,
+        gender: gender,
+        email: email,
+        password: password
     };
 
-    const handleFormSubmit = async () => {
-        console.log("userData being sent to backend is----------------->", userData);
+    const handleSignup = async () => {
+        dispatch(setIsLoading(true));
+        // console.log("userData being sent to backend is----------------->", memberData);
+        const response = await handleMemberSignup(memberData);
+        // console.log("Signup response is-------------------------------->", response);
+        if(response?.data?.status === "success"){
+            dispatch(setIsLoading(false));
+            navigate("/");
+        }
+        else if(response?.data?.status === "failure"){
+            dispatch(setIsLoading(false));
+        }
     };
 
     return (
@@ -107,7 +131,7 @@ const SignupForm = () => {
                 <Typography className={classes.getTextOneStyles}>Welcome to 55Feast</Typography>
                 <Typography className={classes.getTextTwoStyles}>Please enter your details</Typography>
             </Stack>
-            <form onSubmit={handleSubmit(handleFormSubmit)} className={classes.getSignupFormStyles}>
+            <form onSubmit={handleSubmit(handleSignup)} className={classes.getSignupFormStyles}>
                 <Grid container rowSpacing={2} columnSpacing={1}>
                     <Grid item lg={6} md={6} sm={12} xs={12}>
                         <Stack>
@@ -116,7 +140,6 @@ const SignupForm = () => {
                                 variant="outlined"
                                 type="text"
                                 value={firstName}
-                                required
                                 id="firstName"
                                 {...register("firstName", {
                                     required: true,
@@ -124,7 +147,6 @@ const SignupForm = () => {
                                 })}
                                 onChange={(e) => {
                                     setFirstName(e.target.value);
-                                    console.log(e.target.value);
                                 }}
                                 className={classes.root}
                                 inputProps={{ className: classes.input }}
@@ -139,7 +161,6 @@ const SignupForm = () => {
                                 variant="outlined"
                                 type="text"
                                 value={lastName}
-                                required
                                 id="lastName"
                                 {...register("lastName", {
                                     required: true,
@@ -218,7 +239,6 @@ const SignupForm = () => {
                                 <Select
                                     variant="outlined"
                                     labelId="demo-simple-select-label"
-                                    required
                                     displayEmpty
                                     value={location}
                                     inputProps={{ 'aria-label': 'Without label' }}
@@ -260,7 +280,6 @@ const SignupForm = () => {
                                 <Select
                                     variant="outlined"
                                     labelId="demo-simple-select-label"
-                                    required
                                     displayEmpty
                                     value={gender}
                                     inputProps={{ 'aria-label': 'Without label' }}
@@ -303,7 +322,6 @@ const SignupForm = () => {
                                 variant="outlined"
                                 type="email"
                                 value={email}
-                                required
                                 {...register("email", { required: true })}
                                 onChange={(e) => {
                                     setEmail(e.target.value);
@@ -322,7 +340,6 @@ const SignupForm = () => {
                                 variant="outlined"
                                 type={isPasswordVisible ? "text" : "password"}
                                 value={password}
-                                required
                                 {...register("password", {
                                     required: true,
                                     minLength: 8,
@@ -410,6 +427,13 @@ const SignupForm = () => {
                     &nbsp;Login
                 </Link>
             </Box>
+            {
+                isLoading
+                ?
+                <Loader />
+                :
+                <></>
+            }
         </Box>
     );
 }

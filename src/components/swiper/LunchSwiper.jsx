@@ -11,17 +11,15 @@ import SproutsImage from '../../assets/sprouts.jpg';
 import FoxnutsImage from '../../assets/foxnuts.jpg';
 import IdliImage from '../../assets/idli.jpg';
 
-export default function MenuSwiper({ heading, caption }) {
+const LunchSwiper= () => {
 
     const { classes } = getMenuItemStyles();
-
-    return (
-        <>
-        <motion.div
+    
+    <motion.div
             initial={{ translateY: '50px', opacity: 0 }}
             whileInView={{ translateY: '0px', opacity: 1}}
             transition={{ 
-                duration: 0.7,
+                duration: 2,
                 repeatType: 'reverse',
                 ease:'easeInOut',
             }}
@@ -30,10 +28,10 @@ export default function MenuSwiper({ heading, caption }) {
                 className={classes.getSwiperTextContStyles}
             >
                 <Typography className={classes.getSwiperTextOneStyles}>
-                    {heading}
+                    Our snacks pick
                 </Typography>
                 <Typography className={classes.getSwiperTextTwoStyles}>
-                    {caption}
+                    Elevate your snacking experience and enjoy a delightful culinary adventure 
                 </Typography>
             </motion.div>
             <Swiper
@@ -72,6 +70,6 @@ export default function MenuSwiper({ heading, caption }) {
                 </SwiperSlide>
             </Swiper>
         </motion.div>
-        </>
-    );
 }
+
+export default LunchSwiper;
