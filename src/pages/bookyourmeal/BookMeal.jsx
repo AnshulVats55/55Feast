@@ -16,8 +16,8 @@ import snackbarMessages from '../../Constants';
 const BookMeal = () => {
 
     const { classes } = getMealBookingStyles();
-    const dispatch = useDispatch();
 
+    const dispatch = useDispatch();
     const memberData = useSelector((state)=>{
         return state.memberDataReducer;
     });
@@ -28,7 +28,7 @@ const BookMeal = () => {
     const [prebookScroll, setPrebookScroll] = useState('paper');
     const [isBooked, setIsBooked] = useState(false);
     const [isBookingOpen, setIsBookingOpen] = useState(false);
-    const [isDataLoaded, setIsDataLoaded] = useState(false);
+    // const [isDataLoaded, setIsDataLoaded] = useState(false);
 
     const formattedDate = handleFormattedDate(new Date());
     const nextDate = getNextDate(new Date());
@@ -48,7 +48,7 @@ const BookMeal = () => {
         const getMemberBookingStatus = async () => {
             const response = await handleMemberBookingStatus(memberData._id);
             console.log('Response of booking dates', response);
-            const allBookingDates = response.data.data;
+            const allBookingDates = response?.data?.data;
             if((allBookingDates.indexOf(formattedDate) > -1) || (allBookingDates.indexOf(nextDateFormatted) > -1)){
                 setIsBooked(true);
             }
