@@ -1,17 +1,74 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Typography, Skeleton, Grid } from '@mui/material';
 import InviteButton from '../inviteButton/InviteButton';
 import { getInviteMemberCardStyles } from './InviteMemberCard.Styles';
-import DoneIcon from '@mui/icons-material/Done';
 import { motion } from 'framer-motion';
+import { useDispatch } from 'react-redux';
+import snackbarMessages from '../../Constants';
+import { setCustomSnackbar } from '../../store/slices/SnackbarSlice';
 
-const InviteMemberCard = ({ indexNumber, memberName, memberEmail, children, animationDuration, isDataLoaded , bookMealForBuddy}) => {
+const InviteMemberCard = ({ indexNumber, memberName, memberEmail, children, animationDuration, isDataLoaded , handleAction }) => {
 
     const { classes } = getInviteMemberCardStyles();
 
-    const [isInvited, setIsInvited] = useState(false);
-    const handleMemberInvitation = () => {
-        setIsInvited(true);
+    const dispatch = useDispatch();
+    const actionBeingPerformed = async () => {
+        try{
+            const response = await handleAction();
+            console.log("Response at invite member card-------->", response);
+            if(response?.data?.status === "success"){
+                if(response?.data?.message === "Invited successfully"){
+                    dispatch(
+                        setCustomSnackbar({
+                        snackbarOpen: true,
+                        snackbarType: snackbarMessages.SUCCESS,
+                        snackbarMessage: snackbarMessages.MEMBER_INVITATION_SUCCESSFULL,
+                        })
+                    );
+                }
+                else if(response?.data?.message === "Meal booked successfully"){
+                    dispatch(
+                        setCustomSnackbar({
+                        snackbarOpen: true,
+                        snackbarType: snackbarMessages.SUCCESS,
+                        snackbarMessage: snackbarMessages.MEMBER_MEAL_BOOKING_SUCCESSFULL,
+                        })
+                    );
+                }
+            }
+            else if(response?.response?.data?.status === "failure"){
+                if(response?.response?.data?.message === "Internal server error"){
+                    dispatch(
+                        setCustomSnackbar({
+                        snackbarOpen: true,
+                        snackbarType: snackbarMessages.ERROR,
+                        snackbarMessage: snackbarMessages.MEMBER_INVITATION_FAILURE,
+                        })
+                    );
+                }
+                else{
+                    dispatch(
+                        setCustomSnackbar({
+                        snackbarOpen: true,
+                        snackbarType: snackbarMessages.ERROR,
+                        snackbarMessage: snackbarMessages.MEMBER_MEAL_BOOKING_FAILURE,
+                        })
+                    );
+                }
+            }
+            return response;
+        }
+        catch(error){
+            // console.log("inside catch");
+            dispatch(
+                setCustomSnackbar({
+                snackbarOpen: true,
+                snackbarType: snackbarMessages.ERROR,
+                snackbarMessage: "Try again later !",
+                })
+            );
+            return error;
+        }
     };
 
     const handleMemberName = () => {
@@ -60,43 +117,19 @@ const InviteMemberCard = ({ indexNumber, memberName, memberEmail, children, anim
                             <Typography className={classes.getMemberEmailStyles}>{memberEmail}</Typography>
                         </Grid>
                         <Grid item lg={2} md={2} sm={2} xs={3} className={classes.getInviteButtonContStyles}>
-                        {
-                        isInvited
-                        ?
-                        <InviteButton
-                            children={<DoneIcon />}
-                            type=""
-                            styles={{
-                                background:"#4caf50",
-                                borderColor:"#4caf50",
-                                color:"#FFF",
-                                "&:hover": {
-                                    background:"#4caf50",
-                                    color:"#FFF",
-                                },
-                                "@media screen and (max-width: 615px)": {
-                                    fontSize:"0.8rem !important",
-                                },
-                                "@media screen and (max-width: 370px)": {
-                                    padding:"0.15rem 0rem !important",
-                                },
-                            }}
-                        />
-                        :
-                        <InviteButton
-                            children={children}
-                            type=""
-                            handleBookMealForBuddy={bookMealForBuddy}
-                            styles={{
-                                "@media screen and (max-width: 615px)": {
-                                    fontSize:"0.8rem",
-                                },
-                                "@media screen and (max-width: 370px)": {
-                                    padding:"0.15rem 0rem",
-                                },
-                            }}
-                        />
-                        }
+                            <InviteButton
+                                children={children}
+                                type=""
+                                handleAction={actionBeingPerformed}
+                                styles={{
+                                    "@media screen and (max-width: 615px)": {
+                                        fontSize:"0.8rem",
+                                    },
+                                    "@media screen and (max-width: 370px)": {
+                                        padding:"0.15rem 0rem",
+                                    },
+                                }}
+                            />
                         </Grid>
                     </Grid>
                 </motion.div>
@@ -141,31 +174,11 @@ const InviteMemberCard = ({ indexNumber, memberName, memberEmail, children, anim
 
                         <Skeleton animation="wave">
                             <Grid item className={classes.getInviteButtonContStyles}>
-                            {
-                            isInvited
-                            ?
-                            <Skeleton animation="wave">
-                                <InviteButton
-                                    children={<DoneIcon />}
-                                    type=""
-                                    styles={{
-                                        background:"#4caf50",
-                                        borderColor:"#4caf50",
-                                        color:"#FFF",
-                                        "&:hover": {
-                                            background:"#4caf50",
-                                            color:"#FFF",
-                                        },
-                                        
-                                    }}
-                                />
-                            </Skeleton>
-                            :
                             <Skeleton animation="wave">
                                 <InviteButton
                                     children={children}
                                     type=""
-                                    handleMemberInvitation={handleMemberInvitation}
+                                    handleMemberInvitation={actionBeingPerformed}
                                     styles={{
                                         "@media screen and (max-width: 532px)": {
                                             fontSize:"0.8rem !important",
@@ -174,7 +187,6 @@ const InviteMemberCard = ({ indexNumber, memberName, memberEmail, children, anim
                                     }}
                                 />
                             </Skeleton>
-                            }
                             </Grid>
                         </Skeleton>
                     </Grid>

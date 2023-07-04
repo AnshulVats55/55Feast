@@ -4,6 +4,7 @@ import { getInvitationDialogStyles } from './InvitationDialog.Styles';
 import InviteMemberCard from '../card/InviteMemberCard';
 import { getNonInvitedMembers } from '../../api/invitationMethods/InvitationMethods';
 import { useSelector } from 'react-redux';
+import { handleInviteMembers } from '../../invitationMethods/InvitationMethods';
 
 const InvitationDialog = ({ open, scroll, handleClose }) => {
 
@@ -73,6 +74,12 @@ const InvitationDialog = ({ open, scroll, handleClose }) => {
     };
     const filteredUsers = notInvited?.filter(member => member.fullName.toLowerCase().includes(searchTerm));
 
+    const handleInviteNewMember = async (memberEmail) => {
+        const response = await handleInviteMembers(memberEmail);
+        console.log(`${memberEmail} has been invited by you !`, response);
+        return response;
+    };
+
     return (
         <div style={{background:"brown !important"}}>
             <Dialog
@@ -128,6 +135,11 @@ const InvitationDialog = ({ open, scroll, handleClose }) => {
                                 animationDuration={animationDuration}
                                 children="Invite"
                                 isDataLoaded={isDataLoaded}
+                                handleAction={()=>{
+                                        const response = handleInviteNewMember(member.email);
+                                        return response;
+                                    }
+                                }
                             />
                         );
                     })

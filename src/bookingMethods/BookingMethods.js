@@ -104,11 +104,11 @@ export const getMyBuddies = async (memberEmail) => {
     }
 };
 
-export const bookMealForBuddy = async (buddyEmail) => {
+export const bookMealForBuddy = async (buddyData) => {
     try{
-        const response = await axios.post(`${BASE_URL}/user/invite`, { email: buddyEmail }, {
+        const response = await axios.post(`${BASE_URL}/bookmeal/me`, buddyData, {
             headers: {
-                'Authorization': `Bearer ${MEMBER_TOKEN}`, 
+                'Authorization': `Bearer ${MEMBER_TOKEN}`,
                 'Content-Type': 'application/json',
                 referrerPolicy:'no-referrer',
                 mode:'no-mode',

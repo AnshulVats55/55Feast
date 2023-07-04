@@ -3,6 +3,7 @@ import { Button, Dialog, DialogActions, DialogContent, DialogContentText, Dialog
 import { getBookForBuddyDialogStyles } from './BookForBuddy.Styles';
 import InviteMemberCard from '../card/InviteMemberCard';
 import { getMyBuddies, bookMealForBuddy } from '../../bookingMethods/BookingMethods';
+import { handleFormattedDate, getNextDate } from '../../common/CommonData';
 import { useSelector } from 'react-redux';
 
 const BookForBuddyDialog = ({ open, scroll, handleClose }) => {
@@ -18,6 +19,10 @@ const BookForBuddyDialog = ({ open, scroll, handleClose }) => {
     const [myBuddies, setMyBuddies] = useState([]);
     let animationDuration = 0.4;
 
+    const formattedDate = handleFormattedDate(new Date());
+    const nextDate = getNextDate(new Date());
+    const nextDateFormatted = handleFormattedDate(nextDate);
+
     const descriptionElementRef = useRef(null);
     useEffect(() => {
         if (open) {
@@ -27,6 +32,8 @@ const BookForBuddyDialog = ({ open, scroll, handleClose }) => {
         }
         }
     }, [open]);
+
+    const date = new Date().getHours() >= 15 && new Date().getHours() <= 23 ? nextDateFormatted : formattedDate;
 
     const memberData = [//member's dummy data
         {
@@ -58,7 +65,7 @@ const BookForBuddyDialog = ({ open, scroll, handleClose }) => {
     useEffect(()=>{
         const handleMyBuddies = async () => {
             const response = await getMyBuddies(myData.email);
-            console.log("book for buddy api response", response);
+            console.log("these are my buddies--------------->", response);
             if(response?.data?.status === "success"){
                 setMyBuddies(response.data.data);
                 setIsDataLoaded(true);
@@ -73,9 +80,10 @@ const BookForBuddyDialog = ({ open, scroll, handleClose }) => {
     };
     const filteredUsers = myBuddies?.filter(member => member.fullName.toLowerCase().includes(searchTerm));
 
-    const handleBookForBuddy = async (buddyEmail) => {
-        const response = await bookMealForBuddy(buddyEmail);
-        console.log("book meal for buddy API response", response);
+    const handleBookForBuddy = async (buddyData) => {
+        const response = await bookMealForBuddy(buddyData);
+        console.log(`Meal booked for my buddy ${buddyData.email}`, response);
+        return response;
     };
 
     return (
@@ -131,7 +139,11 @@ const BookForBuddyDialog = ({ open, scroll, handleClose }) => {
                                 animationDuration={animationDuration}
                                 children="Book"
                                 isDataLoaded={isDataLoaded}
-                                bookMealForBuddy={()=>{handleBookForBuddy(member.email)}}
+                                handleAction={()=>{
+                                    const response = handleBookForBuddy({ email: member.email, date: date });
+                                    return response;
+                                }
+                            }
                             />
                         );
                     })
