@@ -12,7 +12,9 @@ import handleMemberSignup from '../../api/signup/Signup';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { setIsLoading } from '../../store/slices/LoaderSlice';
+import { setCustomSnackbar } from '../../store/slices/SnackbarSlice';
 import Loader from '../loader/Loader';
+import snackbarMessages from '../../Constants';
 
 const SignupForm = () => {
 
@@ -113,15 +115,30 @@ const SignupForm = () => {
 
     const handleSignup = async () => {
         dispatch(setIsLoading(true));
-        // console.log("userData being sent to backend is----------------->", memberData);
         const response = await handleMemberSignup(memberData);
-        // console.log("Signup response is-------------------------------->", response);
-        if(response?.data?.status === "success"){
+        console.log("Signup response is-------------------------------->", response);
+        if(response?.data?.status === snackbarMessages.SUCCESS){
             dispatch(setIsLoading(false));
-            navigate("/");
+            dispatch(
+                setCustomSnackbar({
+                  snackbarOpen: true,
+                  snackbarType: snackbarMessages.SUCCESS,
+                  snackbarMessage: snackbarMessages.SIGNUP_SUCCESSFULL,
+                })
+            );
+            setTimeout(() => {
+                navigate("/");
+            }, 2500);
         }
-        else if(response?.data?.status === "failure"){
+        else if(response?.data?.status === snackbarMessages.FAILURE){
             dispatch(setIsLoading(false));
+            dispatch(
+                setCustomSnackbar({
+                  snackbarOpen: true,
+                  snackbarType: snackbarMessages.FAILURE,
+                  snackbarMessage: snackbarMessages.SIGNUP_FAILURE,
+                })
+            );
         }
     };
 

@@ -1,16 +1,21 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, Typography } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, Typography, Skeleton } from '@mui/material';
 import { getInvitationDialogStyles } from './InvitationDialog.Styles';
-import MaleAvatar from '../../assets/male avatar.jpg';
-import InviteButton from '../inviteButton/InviteButton';
-// import { motion } from 'framer-motion';
 import InviteMemberCard from '../card/InviteMemberCard';
+import { getNonInvitedMembers } from '../../api/invitationMethods/InvitationMethods';
+import { useSelector } from 'react-redux';
 
 const InvitationDialog = ({ open, scroll, handleClose }) => {
 
+    const adminData = useSelector((state)=>{
+        return state.memberDataReducer;
+    });
+
     const { classes } = getInvitationDialogStyles();
     
+    const [isDataLoaded, setIsDataLoaded] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
+    const [notInvited, setNotInvited] = useState([]);
     let animationDuration = 0.4;
 
     const descriptionElementRef = useRef(null);
@@ -23,49 +28,50 @@ const InvitationDialog = ({ open, scroll, handleClose }) => {
         }
     }, [open]);
 
+    useEffect(()=>{
+        const handleGetNonInvitedMembers = async () => {
+            const response = await getNonInvitedMembers(adminData.email);
+            console.log("non invited members", response);
+            if(response?.data?.status === "success"){
+                setNotInvited(response.data.data);
+                setIsDataLoaded(true);
+            }
+        };
+
+        handleGetNonInvitedMembers();
+    }, []);
+
     const memberData = [//member's dummy data
         {
-            memberAvatar: MaleAvatar,
-            memberName: "Anshul Vats",
-            memberEmail: "anshul.vats@fiftyfivetech.io",
-            action: <InviteButton children="Invite" type="" />
+            memberName: "Dummy User",
+            memberEmail: "dummy.user@fiftyfivetech.io",
         },
         {
-            memberAvatar: MaleAvatar,
-            memberName: "Sameer",
-            memberEmail: "sameer.srivastava@fiftyfivetech.io",
-            action: <InviteButton children="Invite" type="" />
+            memberName: "Dummy User",
+            memberEmail: "dummy.user@fiftyfivetech.io",
         },
         {
-            memberAvatar: MaleAvatar,
-            memberName: "Md Ishaq",
-            memberEmail: "mohammad.ishaq@fiftyfivetech.io",
-            action: <InviteButton children="Invite" type="" />
+            memberName: "Dummy User",
+            memberEmail: "dummy.user@fiftyfivetech.io",
         },
         {
-            memberAvatar: MaleAvatar,
-            memberName: "Vipul Khanna",
-            memberEmail: "vipul.khanna@fiftyfivetech.io",
-            action: <InviteButton children="Invite" type="" />
+            memberName: "Dummy User",
+            memberEmail: "dummy.user@fiftyfivetech.io",
         },
         {
-            memberAvatar: MaleAvatar,
-            memberName: "Shakshi Agarwal",
-            memberEmail: "shakshi.agarwal@fiftyfivetech.io",
-            action: <InviteButton children="Invite" type="" />
+            memberName: "Dummy User",
+            memberEmail: "dummy.user@fiftyfivetech.io",
         },
         {
-            memberAvatar: MaleAvatar,
-            memberName: "Vishal Burnwal",
-            memberEmail: "vishal.burnwal@fiftyfivetech.io",
-            action: <InviteButton children="Invite" type="" />
+            memberName: "Dummy User",
+            memberEmail: "dummy.user@fiftyfivetech.io",
         },
     ];
 
     const handleMemberSearch = event => {//handles member search
         setSearchTerm(event.target.value.toLowerCase());
     };
-    const filteredUsers = memberData.filter(member => member.memberName.toLowerCase().includes(searchTerm));
+    const filteredUsers = notInvited?.filter(member => member.fullName.toLowerCase().includes(searchTerm));
 
     return (
         <div style={{background:"brown !important"}}>
@@ -93,6 +99,9 @@ const InvitationDialog = ({ open, scroll, handleClose }) => {
                         <Typography
                             sx={{
                                 fontSize:"1rem",
+                                "@media screen and (max-width: 532px)": {
+                                    fontSize:"0.9rem",
+                                },
                             }}
                         >
                             Invite new members and help them automate their Lunch Count process
@@ -103,35 +112,51 @@ const InvitationDialog = ({ open, scroll, handleClose }) => {
                             variant="outlined"
                             multiline
                             className={classes.root}
-                            inputProps={{ className: classes.input }}
                             onChange={handleMemberSearch}
                         />
-                {
-                    filteredUsers.length !== 0
+                    {
+                    isDataLoaded
                     ?
-                    filteredUsers?.map((member, index)=>{
-                        animationDuration = animationDuration + 0.05;
+                    filteredUsers?.length > 0
+                    ?
+                    filteredUsers.map((member, index)=>{
                         return(
                             <InviteMemberCard
-                                key={index}
-                                memberAvatar={member.memberAvatar}
-                                memberName={member.memberName}
-                                memberEmail={member.memberEmail}
+                                indexNumber={index+1}
+                                memberName={member.fullName}
+                                memberEmail={member.email}
                                 animationDuration={animationDuration}
                                 children="Invite"
+                                isDataLoaded={isDataLoaded}
                             />
                         );
                     })
                     :
                     <Typography
                         sx={{
-                            fontSize:"1rem",
                             marginTop:"2rem",
+                            fontSize:"1rem",
+                            fontFamily:"Poppins, sans-serif",
                         }}
                     >
-                        No member found with this name !
+                        No member found with this name...
                     </Typography>
-                }
+                    :
+                    memberData.map((member, index)=>{
+                        return(
+                            <Skeleton animation="wave" sx={{ minWidth:"100% !important" }}>
+                                <InviteMemberCard
+                                    indexNumber={index+1}
+                                    memberName={member.memberName}
+                                    memberEmail={member.memberEmail}
+                                    animationDuration={animationDuration}
+                                    children="Invite"
+                                    isDataLoaded={isDataLoaded}
+                                />
+                            </Skeleton>
+                        );
+                    })
+                    }
                     </DialogContentText>
             </DialogContent>
             <DialogActions

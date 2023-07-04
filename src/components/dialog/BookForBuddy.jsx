@@ -1,15 +1,21 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, Typography } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, Typography, Skeleton } from '@mui/material';
 import { getBookForBuddyDialogStyles } from './BookForBuddy.Styles';
-import MaleAvatar from '../../assets/male avatar.jpg';
-import InviteButton from '../inviteButton/InviteButton';
 import InviteMemberCard from '../card/InviteMemberCard';
+import { getMyBuddies, bookMealForBuddy } from '../../bookingMethods/BookingMethods';
+import { useSelector } from 'react-redux';
 
 const BookForBuddyDialog = ({ open, scroll, handleClose }) => {
 
+    const myData = useSelector((state)=>{
+        return state.memberDataReducer;
+    });
+
     const { classes } = getBookForBuddyDialogStyles();
     
+    const [isDataLoaded, setIsDataLoaded] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
+    const [myBuddies, setMyBuddies] = useState([]);
     let animationDuration = 0.4;
 
     const descriptionElementRef = useRef(null);
@@ -24,47 +30,53 @@ const BookForBuddyDialog = ({ open, scroll, handleClose }) => {
 
     const memberData = [//member's dummy data
         {
-            memberAvatar: MaleAvatar,
-            memberName: "Anshul Vats",
-            memberEmail: "anshul.vats@fiftyfivetech.io",
-            action: <InviteButton children="Invite" type="" />
+            memberName: "Dummy User",
+            memberEmail: "dummy.user@fiftyfivetech.io",
         },
         {
-            memberAvatar: MaleAvatar,
-            memberName: "Sameer",
-            memberEmail: "sameer.srivastava@fiftyfivetech.io",
-            action: <InviteButton children="Invite" type="" />
+            memberName: "Dummy User",
+            memberEmail: "dummy.user@fiftyfivetech.io",
         },
         {
-            memberAvatar: MaleAvatar,
-            memberName: "Md Ishaq",
-            memberEmail: "mohammad.ishaq@fiftyfivetech.io",
-            action: <InviteButton children="Invite" type="" />
+            memberName: "Dummy User",
+            memberEmail: "dummy.user@fiftyfivetech.io",
         },
         {
-            memberAvatar: MaleAvatar,
-            memberName: "Vipul Khanna",
-            memberEmail: "vipul.khanna@fiftyfivetech.io",
-            action: <InviteButton children="Invite" type="" />
+            memberName: "Dummy User",
+            memberEmail: "dummy.user@fiftyfivetech.io",
         },
         {
-            memberAvatar: MaleAvatar,
-            memberName: "Shakshi Agarwal",
-            memberEmail: "shakshi.agarwal@fiftyfivetech.io",
-            action: <InviteButton children="Invite" type="" />
+            memberName: "Dummy User",
+            memberEmail: "dummy.user@fiftyfivetech.io",
         },
         {
-            memberAvatar: MaleAvatar,
-            memberName: "Vishal Burnwal",
-            memberEmail: "vishal.burnwal@fiftyfivetech.io",
-            action: <InviteButton children="Invite" type="" />
+            memberName: "Dummy User",
+            memberEmail: "dummy.user@fiftyfivetech.io",
         },
     ];
+
+    useEffect(()=>{
+        const handleMyBuddies = async () => {
+            const response = await getMyBuddies(myData.email);
+            console.log("book for buddy api response", response);
+            if(response?.data?.status === "success"){
+                setMyBuddies(response.data.data);
+                setIsDataLoaded(true);
+            }
+        };
+
+        handleMyBuddies();
+    }, []);
 
     const handleMemberSearch = event => {//handles member search
         setSearchTerm(event.target.value.toLowerCase());
     };
-    const filteredUsers = memberData.filter(member => member.memberName.toLowerCase().includes(searchTerm));
+    const filteredUsers = myBuddies?.filter(member => member.fullName.toLowerCase().includes(searchTerm));
+
+    const handleBookForBuddy = async (buddyEmail) => {
+        const response = await bookMealForBuddy(buddyEmail);
+        console.log("book meal for buddy API response", response);
+    };
 
     return (
         <div style={{background:"brown !important"}}>
@@ -98,41 +110,59 @@ const BookForBuddyDialog = ({ open, scroll, handleClose }) => {
                         </Typography>
                         <TextField
                             type="search"
-                            placeholder=""
+                            placeholder="Search for your buddy..."
                             variant="outlined"
                             multiline
                             className={classes.root}
                             inputProps={{ className: classes.input }}
                             onChange={handleMemberSearch}
                         />
-                {
-                    filteredUsers.length !== 0
+                    {
+                    isDataLoaded
+                    ?
+                    filteredUsers?.length > 0
                     ?
                     filteredUsers?.map((member, index)=>{
-                        animationDuration = animationDuration + 0.05;
                         return(
                             <InviteMemberCard
-                                key={index}
-                                memberAvatar={member.memberAvatar}
-                                memberName={member.memberName}
-                                memberEmail={member.memberEmail}
+                                indexNumber={index+1}
+                                memberName={member.fullName}
+                                memberEmail={member.email}
                                 animationDuration={animationDuration}
                                 children="Book"
+                                isDataLoaded={isDataLoaded}
+                                bookMealForBuddy={()=>{handleBookForBuddy(member.email)}}
                             />
                         );
                     })
                     :
                     <Typography
                         sx={{
-                            fontSize:"1rem",
                             marginTop:"2rem",
+                            fontSize:"1rem",
+                            fontFamily:"Poppins, sans-serif",
                         }}
                     >
-                        No buddy found with this name !
+                        No buddy found with this name
                     </Typography>
-                }
+                    :
+                    memberData?.map((member, index)=>{
+                        return(
+                            <Skeleton animation="wave" sx={{ minWidth:"100% !important" }}>
+                                <InviteMemberCard
+                                    indexNumber={index+1}
+                                    memberName={member.memberName}
+                                    memberEmail={member.memberEmail}
+                                    animationDuration={animationDuration}
+                                    children="Book"
+                                    isDataLoaded={isDataLoaded}
+                                />
+                            </Skeleton>
+                        );
+                    })
+                    }
                     </DialogContentText>
-            </DialogContent>
+                </DialogContent>
             <DialogActions
                 className={classes.getDialogActionStyles}
             >

@@ -7,12 +7,15 @@ import BookMeal from '../../pages/bookyourmeal/BookMeal';
 import Authmodal from '../../pages/authmodal/Authmodal';
 import SignupForm from '../signupForm/SignupForm';
 import LoginForm from '../loginForm/LoginForm';
+import AdminDashboard from '../../pages/adminDashboard/AdminDashboard';
+import CustomSnackbar from '../snackbar/Snackbar';
 import BurgerImage from '../../assets/burger.png';
 import HotdogImage from '../../assets/hotdog.png';
 
 const AllRoutes = () => {
   return (
     <Router>
+        <CustomSnackbar />
         {
             localStorage.getItem("memberToken")
             ?
@@ -21,6 +24,7 @@ const AllRoutes = () => {
                 <Routes>
                     <Route exact path="/" element={<CommonLayout component={<Home />} />} />
                     <Route exact path="/bookyourmeal" element={<CommonLayout component={<BookMeal />} />} />
+                    <Route exact path="/dashboard" element={<CommonLayout component={<AdminDashboard />} />} />
                 </Routes>
             </>
             :

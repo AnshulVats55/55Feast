@@ -10,6 +10,9 @@ export const getInvitationDialogStyles = makeStyles()((theme)=>({
         // background:"orange",
         fontSize: "1.25rem",
         fontFamily: theme.typography.fontFamily,
+        "@media screen and (max-width: 532px)": {
+            fontSize:"1.10rem",
+        },
     },
 
     getDialogContentStyles: {

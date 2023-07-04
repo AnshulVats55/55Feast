@@ -16,17 +16,25 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { getNavbarStyles } from './Navbar.Styles';
 import CommonButton from '../button/CommonButton';
 import { motion } from 'framer-motion';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { setCustomSnackbar } from '../../store/slices/SnackbarSlice';
+import snackbarMessages from '../../Constants';
 
 const Navbar = () => {
 
     const { classes } = getNavbarStyles();
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
-    const { photo, isAdmin } = useSelector((state)=>{
+    const { isAdmin, photo } = useSelector((state)=>{
         return state.memberDataReducer;
     });
+
+    const memberData = useSelector((state)=>{
+        return state.memberDataReducer;
+    });
+    console.log(memberData);
 
     const memberNavigationLinks = [
         { text: 'Home', icon: <Home className={classes.getListItemIconStyles} />, url: '/' },
@@ -36,7 +44,7 @@ const Navbar = () => {
 
     const adminNavigationLinks = [
         { text: 'Home', icon: <Home className={classes.getListItemIconStyles} />, url: '/' },
-        { text: "Today's count", icon: <RestaurantMenu className={classes.getListItemIconStyles} />, url: '/todayscount' },
+        { text: "Dashboard", icon: <RestaurantMenu className={classes.getListItemIconStyles} />, url: '/dashboard' },
         { text: 'Reviews', icon: <RateReview className={classes.getListItemIconStyles} />, url: '/reviews' },
     ];
 
@@ -71,9 +79,28 @@ const Navbar = () => {
 
     const handleLogout = () => {
         localStorage.removeItem("memberToken");
-        localStorage.removeItem("persist:root");
-        navigate("/");
-        window.location.reload();
+        if(localStorage.getItem("memberToken") === null){
+            dispatch(
+                setCustomSnackbar({
+                  snackbarOpen: true,
+                  snackbarType: snackbarMessages.SUCCESS,
+                  snackbarMessage: snackbarMessages.LOGOUT_SUCCESSFULL,
+                })
+            );
+            setTimeout(()=>{
+                navigate("/");
+                window.location.reload();
+            }, 1500);
+        }
+        else{
+            dispatch(
+                setCustomSnackbar({
+                  snackbarOpen: true,
+                  snackbarType: snackbarMessages.ERROR,
+                  snackbarMessage: snackbarMessages.LOGOUT_FAILURE,
+                })
+            );
+        }
     };
 
     return (
@@ -96,7 +123,15 @@ const Navbar = () => {
                         {
                             isAdmin
                             ?
-                            <Drawer anchor="left" open={Boolean(anchorElNav)} onClick={handleCloseNavMenu}>
+                            <Drawer
+                                anchor="left"
+                                open={Boolean(anchorElNav)}
+                                onClick={handleCloseNavMenu}
+                                sx={{
+                                    borderTopRightRadius:"10px",
+                                    borderBottomRightRadius:"10px",
+                                }}
+                            >
                             <Box className={classes.getNavLinksContStylesOne} role="presentation" onClick={toggleDrawer(false)} onKeyDown={toggleDrawer(false)}>
                                 <Close className={classes.getCloseIconStylesOne} onClick={handleCloseNavMenu} />
                                 <List>
@@ -107,10 +142,10 @@ const Navbar = () => {
                                         href={link.url}
                                         className={classes.getListItemStylesOne}
                                         sx={{
-                                            ...(index === 0 ? { marginTop:"2.5rem !important" } : { marginTop: "0.75rem !important" })
+                                            ...(index === 0 ? { marginTop:"2.5rem !important" } : { marginTop: "1.5rem !important" })
                                         }}
                                     >
-                                            {link.icon}
+                                        {link.icon}
                                         <Typography className={classes.getListItemTextStylesOne}>{link.text}</Typography>
                                     </ListItem>
                                     ))}
@@ -118,7 +153,15 @@ const Navbar = () => {
                             </Box>
                         </Drawer>
                         :
-                        <Drawer anchor="left" open={Boolean(anchorElNav)} onClick={handleCloseNavMenu}>
+                        <Drawer
+                            anchor="left"
+                            open={Boolean(anchorElNav)}
+                            onClick={handleCloseNavMenu}
+                            sx={{
+                                borderTopRightRadius:"10px",
+                                borderBottomRightRadius:"10px",
+                            }}
+                        >
                             <Box className={classes.getNavLinksContStylesOne} role="presentation" onClick={toggleDrawer(false)} onKeyDown={toggleDrawer(false)}>
                                 <Close className={classes.getCloseIconStylesOne} onClick={handleCloseNavMenu} />
                                 <List>
@@ -129,7 +172,7 @@ const Navbar = () => {
                                         href={link.url}
                                         className={classes.getListItemStylesOne}
                                         sx={{
-                                            ...(index === 0 ? { marginTop:"2.5rem !important" } : { marginTop: "0.75rem !important" })
+                                            ...(index === 0 ? { marginTop:"2.5rem !important" } : { marginTop: "1.5rem !important" })
                                         }}
                                     >
                                             {link.icon}
@@ -144,7 +187,7 @@ const Navbar = () => {
                     <Typography
                         noWrap
                         component="a"
-                        href=""
+                        href="/"
                         sx={{
                             mr: 2,
                             fontSize:"1.5rem !important",
@@ -158,6 +201,7 @@ const Navbar = () => {
                             },
                             "@media screen and (max-width: 399px)": {
                                 fontSize:"1.10rem !important",
+                                mr: 3.5,
                             },
                         }}
                         className={classes.getBrandLogoStyles}

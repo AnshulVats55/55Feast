@@ -29,6 +29,11 @@ export const getBookingCardStyles = makeStyles()((theme)=>({
         },
     },
 
+    getImageSkeletonStyles: {
+        width:"100%",
+        borderRadius:"0px"
+    },
+
     getMemberPictureStyles: {
         width:"100%",
         borderTopLeftRadius:"10px",

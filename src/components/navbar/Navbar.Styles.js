@@ -9,6 +9,9 @@ export const getNavbarStyles = makeStyles()((theme)=>({
         left:"0px",
         background:"none",
         height:"10vh",
+        "@media screen and (max-width: 399px)": {
+            height:"8vh"
+        },
     },
 
     getToolbarContStyles: {
@@ -30,6 +33,9 @@ export const getNavbarStyles = makeStyles()((theme)=>({
         "@media screen and (max-width: 600px)": {
             borderBottomLeftRadius:"1rem",
             borderBottomRightRadius:"1rem",
+        },
+        "@media screen and (max-width: 399px)": {
+            height:"8vh"
         },
     },
 
@@ -55,6 +61,10 @@ export const getNavbarStyles = makeStyles()((theme)=>({
         "&:hover": {
             color:"#FFF",
         },
+        "@media screen and (max-width: 399px)": {
+            maxWidth:"150px",
+        },
+        // background:"pink",
     },
 
     getNavLinksContStylesOne: {
@@ -119,7 +129,7 @@ export const getNavbarStyles = makeStyles()((theme)=>({
         flexDirection:"row",
         justifyContent:"space-between",
         alignItems:"center",
-        "@media screen and (max-width: 900px)": {
+        "@media screen and (max-width: 899px)": {
             display:"none",
         },
     },

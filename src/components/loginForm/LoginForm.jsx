@@ -8,12 +8,12 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { motion } from 'framer-motion';
 import handleMemberLogin from '../../api/login/Login';
-import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { setMemberData } from '../../store/slices/MemberDataSlice';
-import { setMemberPicture } from '../../store/slices/MemberPictureSlice';
+import { setCustomSnackbar } from '../../store/slices/SnackbarSlice';
 import { setIsLoading } from '../../store/slices/LoaderSlice';
 import Loader from '../loader/Loader';
+import snackbarMessages from '../../Constants';
 const LoginForm = () => {
 
     const { classes } = getLoginFormStyles();
@@ -21,9 +21,7 @@ const LoginForm = () => {
     const isLoading = useSelector((state)=>{
         return state.loaderReducer.isLoading;
     });
-    // console.log(isLoading);
 
-    const navigate = useNavigate();
     const dispatch = useDispatch();
 
     const [email, setEmail] = useState("");
@@ -47,13 +45,22 @@ const LoginForm = () => {
       const handleFormSubmit = async () => {
         dispatch(setIsLoading(true));
         const response = await handleMemberLogin(memberData);
-        // console.log(response);
+        console.log(response);
         if(response?.data?.status === "success"){
             dispatch(setIsLoading(false));
+            dispatch(
+                setCustomSnackbar({
+                  snackbarOpen: true,
+                  snackbarType: snackbarMessages.SUCCESS,
+                  snackbarMessage: snackbarMessages.LOGIN_SUCCESSFULL,
+                })
+            );
             localStorage.setItem("memberToken", response.data.data.token);
             dispatch(setMemberData(response.data.data.user));
-            window.location.reload();
-        };
+            setTimeout(() => {
+                window.location.reload();
+            }, 1500);
+        }
       };
 
     return (

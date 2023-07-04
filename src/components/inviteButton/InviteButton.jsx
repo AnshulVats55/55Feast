@@ -1,9 +1,9 @@
 import React from 'react';
-import { Button } from '@mui/material';
+import { Button, Skeleton } from '@mui/material';
 import { getInviteButtonStyles } from './InviteButton.Styles';
 import CircularProgress from '@mui/material/CircularProgress';
 
-const InviteButton = ({ children, type, handleMemberInvitation, styles }) => {
+const InviteButton = ({ children, type, handleBookMealForBuddy, styles }) => {
 
     const { classes } = getInviteButtonStyles(styles);
 
@@ -11,7 +11,7 @@ const InviteButton = ({ children, type, handleMemberInvitation, styles }) => {
         <Button
             className={classes.getButtonStyles}
             type={type}
-            onClick={handleMemberInvitation}
+            onClick={handleBookMealForBuddy}
         >
             {children}
         </Button>

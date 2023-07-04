@@ -3,7 +3,6 @@ import { makeStyles } from "tss-react/mui";
 export const getLoginFormStyles = makeStyles()((theme)=>({
 
     getMainContStyles: {
-        // background:"lightgreen",
         height:"100%",
         display:"flex",
         flexDirection:"column",
@@ -12,9 +11,11 @@ export const getLoginFormStyles = makeStyles()((theme)=>({
     },
 
     getTextContStyles: {
-        // background:"brown",
         justifyContent:"center",
-        alignItems:"center"
+        alignItems:"center",
+        "@media screen and (max-width: 599px)": {
+            marginTop:"-5rem",
+        }
     },
 
     getTextOneStyles: {
@@ -38,7 +39,6 @@ export const getLoginFormStyles = makeStyles()((theme)=>({
     },
 
     getSignupFormStyles: {
-        // background:"cyan",
         width:"80%",
         "@media screen and (max-width: 1200px)": {
             width:"90%",
@@ -111,7 +111,6 @@ export const getLoginFormStyles = makeStyles()((theme)=>({
     },
 
     getLinkContStyles: {
-        // background:"skyblue",
         display:"flex",
         justifyContent:"center",
         alignItems:'center',

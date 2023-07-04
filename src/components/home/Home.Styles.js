@@ -13,13 +13,14 @@ export const getHomePageStyles = makeStyles()((theme)=>({
         height:"90vh",
         "@media screen and (max-width: 544px)": {
             height:"65vh",
-            // marginBottom:"1rem"
+        },
+        "@media screen and (max-width: 399px)": {
+            height:"50vh",
         },
     },
 
     getHomeTextContStyles: {
         width:"100%",
-        height:"100%",
         // background:"cyan",
         display:"flex",
         flexDirection:"column",
@@ -27,6 +28,14 @@ export const getHomePageStyles = makeStyles()((theme)=>({
         "@media screen and (max-width:899px)": {
             justifyContent:"center",
             alignItems:"center",
+            padding:"4rem 0rem",
+        },
+        "@media screen and (max-width:599px)": {
+            padding:"4.5rem 0rem",
+        },
+        "@media screen and (max-width:399px)": {
+            padding:"0rem",
+            height:"100%",
         },
     },
 
@@ -49,12 +58,11 @@ export const getHomePageStyles = makeStyles()((theme)=>({
         },
         "@media screen and (max-width:899px)": {
             marginLeft:"0px",
-            marginTop:"3rem",
             fontSize:"3.5rem",
+            marginTop:"0rem",
         },
         "@media screen and (max-width:544px)": {
             fontSize:"2.75rem",
-            // marginTop:"4.50rem",
         },
         "@media screen and (max-width:463px)": {
             fontSize:"2.25rem",
@@ -120,7 +128,10 @@ export const getHomePageStyles = makeStyles()((theme)=>({
         },
         "@media screen and (max-width:544px)": {
             height:"85vh",
-            marginBottom:"1rem",
+        },
+        "@media screen and (max-width:409px)": {
+            alignItems:"flex-start",
+            height:"auto",
         },
     },
 
@@ -142,7 +153,7 @@ export const getHomePageStyles = makeStyles()((theme)=>({
             width:"75%",
         },
         "@media screen and (max-width:409px)": {
-            width:"90%",
+            width:"85%",
         },
     },
 
@@ -186,8 +197,16 @@ export const getHomePageStyles = makeStyles()((theme)=>({
         "@media screen and (max-width: 899px)": {
             marginLeft:"0px",
         },
-        "@media screen and (max-width:409px)": {
+        "@media screen and (max-width: 544px)": {
             fontSize:"0.9rem",
+        },
+        "@media screen and (max-width:409px)": {
+            fontSize:"0.85rem",
+            padding:"0.20rem 0.60rem",
+        },
+        "@media screen and (max-width:360px)": {
+            padding:"0.15rem 0.50rem",
+            height:"35px",
         },
     },
 
@@ -213,10 +232,18 @@ export const getHomePageStyles = makeStyles()((theme)=>({
             outline:"none",
         },
         "@media screen and (max-width: 899px)": {
-            marginLeft:"0px",
+            marginLeft:"1.5rem",
+        },
+        "@media screen and (max-width: 544px)": {
+            fontSize:"0.9rem",
         },
         "@media screen and (max-width:409px)": {
-            fontSize:"0.9rem",
+            fontSize:"0.85rem",
+            padding:"0.20rem 0.60rem",
+        },
+        "@media screen and (max-width:360px)": {
+            padding:"0.15rem 0.50rem",
+            height:"35px",
         },
     },
 }));

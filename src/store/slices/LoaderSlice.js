@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const loader = {
-    isLoading: false
+    isLoading: false,
 };
 
 const loaderSlice = createSlice({

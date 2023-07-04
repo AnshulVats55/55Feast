@@ -2,6 +2,8 @@ import { configureStore } from "@reduxjs/toolkit";
 import memberDataSlice from "./slices/MemberDataSlice";
 import loaderSlice from "./slices/LoaderSlice";
 import memberPictureSlice from "./slices/MemberPictureSlice";
+import mealBookingSlice from "./slices/mealBookingSlice";
+import snackBarSlice from "./slices/SnackbarSlice";
 import storage from 'redux-persist/lib/storage';
 import { persistReducer } from "redux-persist";
 import { combineReducers } from "@reduxjs/toolkit";
@@ -16,7 +18,9 @@ const reducer = combineReducers(
     {
         memberDataReducer: memberDataSlice.reducer,
         memberPictureReducer: memberPictureSlice.reducer,
-        loaderReducer: loaderSlice.reducer
+        mealBookingReducer: mealBookingSlice.reducer,
+        loaderReducer: loaderSlice.reducer,
+        snackbarReducer: snackBarSlice.reducer
     }
 );
 
